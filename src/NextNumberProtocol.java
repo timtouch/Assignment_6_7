@@ -17,23 +17,8 @@ public class NextNumberProtocol {
         message += "   5 values of nextPrime: " + Prime;
         String Rand=nextLargerRand(Max);
         message += "   5 values of LargeRand: " + Rand;
-        //------------------
-
-        if (Max<=100)
-        {
-            Max = maxNumber(Rand)+1;
-        }
-        else
-        {
-            Max = 0;
-        }
-
-        //--------------------
-        if(Prime.contains(" ")){
-            int lastIndex = Prime.lastIndexOf(' ');
-            Prime = Prime.substring(lastIndex+1);
-            lastPrime = Integer.parseInt(Prime);
-        }
+        Max = lastNumber(Rand)+1;
+        lastPrime = lastNumber(Prime);
         x += 5;
         return message;
     }
@@ -93,34 +78,37 @@ public class NextNumberProtocol {
     public String nextLargerRand(int min)
     {
         Random rand = new Random(0);
-
+        int temp = min;
         String Rand = "";
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
         for (int i=0; i<5; i++)
         {
-            int randomNum = rand.nextInt(100 - min) + min;
-            Rand+=Integer.toString(randomNum) + " ";
+            int randomNum = rand.nextInt((1000 - temp)+1) + temp;
+            Rand+=" " +Integer.toString(randomNum) ;
+            if (temp <995)
+            {
+                temp = randomNum;
+            }
+            else
+            {
+                temp = 0;
+            }
         }
         return Rand;
-
     }
 
     /**
      * @param s
      * @return
      */
-    public int maxNumber(String s){
-
-        String[] testArray = s.split(" ");
-        int max = Integer.MIN_VALUE, maxIndex = 0;
-
-        for (int i = 0; i < testArray.length; i++) {
-            if (Integer.parseInt(testArray[i]) > max) {
-                max = Integer.parseInt(testArray[i]);
-                maxIndex = i;
-            }
+    public int lastNumber(String s){
+        int lastNumber=0;
+        if(s.contains(" ")){
+            int lastIndex = s.lastIndexOf(' ');
+            s = s.substring(lastIndex+1);
+            lastNumber = Integer.parseInt(s);
         }
-        return max;
+        return lastNumber;
     }
 }
