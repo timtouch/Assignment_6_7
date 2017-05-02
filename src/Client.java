@@ -6,7 +6,7 @@ import java.net.*;
 public class Client {
 
 	public static void main(String[] args) throws UnknownHostException, IOException{
-		if(args.length == 1){
+		if(args.length == 2){
 			String name = args[0];
 			String IPAddress = args[1];
 			Socket socket = new Socket(IPAddress, 4444);

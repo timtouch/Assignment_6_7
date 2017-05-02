@@ -19,7 +19,7 @@ public class ServerThread extends Thread{
             BufferedReader bufferedReader  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("User " + bufferedReader.readLine() + " is now connected to the server.");
             while((message = bufferedReader.readLine()) != null){
-                printWriter.println("Server echoing Client message: " + nnprotocol.handleInput(message));
+                printWriter.println("Server echoing Client message: " + nnprotocol.processInput(message));
             }
             socket.close();
 
