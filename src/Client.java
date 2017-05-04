@@ -14,12 +14,10 @@ public class Client {
 			PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
 			printWriter.println(name);
 			BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
-			int x;
 			while(true){
 				System.out.println("Please type any character to send a request: ");
 				String readerInput = bufferedReader.readLine();
-				x = Integer.valueOf(readerInput);
-				printWriter.println(name + ": " + readerInput);
+				printWriter.println(readerInput);
 				System.out.println(bufferedReaderFromClient.readLine());
 			}
 		} else {

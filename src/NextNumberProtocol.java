@@ -5,6 +5,7 @@
 public class NextNumberProtocol {
 
     private int nextPrimeNumber = 1;
+    private int prevFib = 1;
     private int nextEvenFibNumber = 1;
     private int nextLargerRandomNumber = 0;
 
@@ -14,18 +15,15 @@ public class NextNumberProtocol {
         System.out.println(input);
         if(input.equalsIgnoreCase("fib"))
         {
-            nextEvenFibNumber = nextEvenFib(nextEvenFibNumber);
-            output = String.format("%d", nextEvenFibNumber);
+            output = String.format("%d", nextEvenFib());
         }
         else if(input.equalsIgnoreCase("rand"))
         {
-            nextLargerRandomNumber = nextLargerRand(nextLargerRandomNumber);
-            output = String.format("%d", nextLargerRandomNumber);
+            output = String.format("%d", nextLargerRand());
         }
         else if(input.equalsIgnoreCase("prime"))
         {
-            nextPrimeNumber = nextPrime(nextPrimeNumber);
-            output = String.format("%d", nextPrimeNumber);
+            output = String.format("%d",  nextPrime());
         }
         else
         {
@@ -36,46 +34,43 @@ public class NextNumberProtocol {
 
     /**
      * Gets the next even fibonacci number
-     * @param   highest the previous even fibonacci number
-     * @return          the next even fibonacci number
+     * @return  the next even fibonacci number
      */
-    public int nextEvenFib(int highest)
+    public int nextEvenFib()
     {
-        int fibNum = 1,
-                prevFibNum = 1,
-                temp;
-        while(!(fibNum > highest && fibNum % 2 == 0)){
-            temp = fibNum;
-            fibNum = fibNum + prevFibNum;
-            prevFibNum = temp;
-        }
-        return  fibNum;
+        int temp;
+        do {
+            temp = nextEvenFibNumber;
+            nextEvenFibNumber = nextEvenFibNumber + prevFib;
+            prevFib = temp;
+        } while (!(nextEvenFibNumber % 2 == 0));
+
+        return nextEvenFibNumber;
     }
 
     /**
      * Gets the next larger random integer, if it hits the max, it wraps back around
-     * @param   highest previous random number
      * @return          a somewhat random number larger than the previous one
      */
-    public int nextLargerRand(int highest)
+    public int nextLargerRand()
     {
-        return (highest + (int)Math.abs(Math.random()*1000)) % Integer.MAX_VALUE;
+        return nextLargerRandomNumber = (nextLargerRandomNumber + (int)Math.abs(Math.random()*1000)) % Integer.MAX_VALUE;
     }
+
 
     /**
      * Gets the next prime number
-     * @param   highest previous prime number
      * @return          the next prime number
      */
-    public int nextPrime(int highest)
+    public int nextPrime()
     {
-        int number = highest + 1;
-        while(!isPrime(number))
+        nextPrimeNumber = nextPrimeNumber + 1;
+        while(!isPrime(nextPrimeNumber))
         {
-            number++;
+            nextPrimeNumber++;
         }
 
-        return number;
+        return nextPrimeNumber;
     }
 
     /**
