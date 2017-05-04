@@ -11,13 +11,14 @@ import java.net.Socket;
  */
 public class NetworkThread {
 
-    String name;
-    String IPAddress;
-    Socket socket;
-    int portNumber;
-    BufferedReader bufferedReaderFromClient;
-    PrintWriter printWriter;
-    BufferedReader bufferedReader;
+    private String name;
+    private String IPAddress;
+    private Socket socket;
+    private int portNumber;
+    private BufferedReader bufferedReaderFromClient;
+    private PrintWriter printWriter;
+    private BufferedReader bufferedReader;
+
     NetworkThread () throws IOException{
         name = "Client 1";
         IPAddress = "localhost";

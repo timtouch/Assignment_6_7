@@ -17,7 +17,7 @@ public class Client {
 			while(true){
 				System.out.println("Please type any character to send a request: ");
 				String readerInput = bufferedReader.readLine();
-				printWriter.println(readerInput);
+				printWriter.println(readerInput); // This is where we send to the server
 				System.out.println(bufferedReaderFromClient.readLine());
 			}
 		} else {

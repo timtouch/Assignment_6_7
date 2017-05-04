@@ -13,21 +13,21 @@ public class NextNumberProtocol {
     {
         String output;
         System.out.println(input);
-        if(input.equalsIgnoreCase("fib"))
+        if(input.equalsIgnoreCase("nextEvenFib"))
         {
             output = String.format("%d", nextEvenFib());
         }
-        else if(input.equalsIgnoreCase("rand"))
+        else if(input.equalsIgnoreCase("nextLargerRand"))
         {
             output = String.format("%d", nextLargerRand());
         }
-        else if(input.equalsIgnoreCase("prime"))
+        else if(input.equalsIgnoreCase("nextPrime"))
         {
             output = String.format("%d",  nextPrime());
         }
         else
         {
-            output ="Not a valid input";
+            output ="Not a valid input.  The valid inputs are \"nextevenfib\", \"nextLargerRand\", & \"nextPrime\" ";
         }
         return output;
     }

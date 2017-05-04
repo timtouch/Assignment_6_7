@@ -7,12 +7,39 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RuntimeThread extends Thread {
 
-    ConcurrentLinkedQueue requestQueue = new ConcurrentLinkedQueue();
-    ConcurrentLinkedQueue responseQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<String> requestQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<Integer> responseQueue = new ConcurrentLinkedQueue();
 
-    LocalOddEvenThread localThr;
-    NetworkThread networkThr;
+    private LocalOddEvenThread localThr = new LocalOddEvenThread();
+    private NetworkThread networkThr;
 
+    public void run() {
+        while(true){
+            if(!requestQueue.isEmpty()){
+                handleRequest();
+            }
+        }
+    }
+
+    /***
+     * Handles the next request on the request queue
+     */
+    void handleRequest(){
+        switch (removeRequest()){
+            case "nextOdd":
+                addResponse(localThr.nextOdd());
+                break;
+            case "nextEven":
+                addResponse(localThr.nextEven());
+                break;
+            default:
+                break;
+        }
+    }
+
+    public boolean hasResponse(){
+        return !responseQueue.isEmpty();
+    }
 
     void addRequest(String request){
         requestQueue.add(request);
@@ -22,7 +49,7 @@ public class RuntimeThread extends Thread {
         return requestQueue.poll().toString();
     }
 
-    void addResponse(String response){
+    void addResponse(int response){
         responseQueue.add(response);
     }
 
