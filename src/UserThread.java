@@ -1,28 +1,39 @@
+import java.io.IOException;
+
 /**
  * Requests for different random services and prints out the responses
  * Created by ttouc on 5/3/2017.
  */
 public class UserThread extends Thread{
-    int numIterations = 20;
-    String[] commands = { "nextEven", "nextOdd"};//, "nextEvenFib", "nextPrime", "nextLargerRand"}; // For a smaller set
-    RuntimeThread runtimeThr;
+    private int numIterations = 20;
+    private int responses = 0;
+    private RuntimeThread runtimeThr;
+    private final Request[] values = Request.values();
 
-    UserThread(){
+    UserThread() throws IOException {
         runtimeThr = new RuntimeThread();
     }
 
     public void run(){
         runtimeThr.start();
         for (int i = 0; i < numIterations; i++) {
-            String request = commands[(int)(Math.random()*commands.length)]; // Choose randomly from a set of requests
-            runtimeThr.addRequest(request);
+            runtimeThr.addRequest(getRandomRequest());
         }
 
-        while(true){
+        while(responses < numIterations){
             if(runtimeThr.hasResponse()){
-                System.out.println(runtimeThr.removeResponse());
+                System.out.println("User ID: " + getId() + " received response " + runtimeThr.removeResponse());
+                responses++;
             }
         }
+        return;
+    }
+
+    /**
+     * @return a random request
+     */
+    public Request getRandomRequest(){
+        return values[(int)(Math.random()*values.length)];
     }
 
 }

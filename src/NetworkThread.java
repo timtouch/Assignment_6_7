@@ -30,9 +30,14 @@ public class NetworkThread {
         bufferedReader = new java.io.BufferedReader(new InputStreamReader((System.in)));
     }
 
-    void requestNumber(String request) throws IOException{
-        printWriter.println(request);
-        System.out.println(bufferedReaderFromClient.readLine());
+    int requestNumber(Request request) throws IOException{
+        int result;
+
+        socket = new Socket(IPAddress, portNumber);
+        printWriter.println(request.toString());
+        result = Integer.parseInt(bufferedReaderFromClient.readLine());
+
         socket.close();
+        return result;
     }
 }
