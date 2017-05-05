@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class RuntimeThread extends Thread {
 
     private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
-    private ConcurrentLinkedQueue<Integer> responseQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
 
     private LocalOddEvenThread localThr = new LocalOddEvenThread();
     private NetworkThread networkThr;
@@ -20,15 +20,14 @@ public class RuntimeThread extends Thread {
     }
 
     public void run()  {
-        while(true){
-            if(!requestQueue.isEmpty()){
-                try {
+        try {
+            while (true) {
+                if (!requestQueue.isEmpty()) {
                     handleRequest();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -39,15 +38,15 @@ public class RuntimeThread extends Thread {
         Request request = removeRequest();
         switch (request){
             case NEXTODD:
-                addResponse(localThr.nextOdd());
+                addResponse(new Response(request, localThr.nextOdd()));
                 break;
             case NEXTEVEN:
-                addResponse(localThr.nextEven());
+                addResponse(new Response(request, localThr.nextEven()));
                 break;
             case NEXTPRIME:
             case NEXTEVENFIB:
             case NEXTLARGERRAND:
-                addResponse(networkThr.requestNumber(request));
+                addResponse(new Response(request, networkThr.requestNumber(request)));
                 break;
             default:
                 break;
@@ -66,11 +65,11 @@ public class RuntimeThread extends Thread {
         return requestQueue.poll();
     }
 
-    void addResponse(int response){
+    void addResponse(Response response){
         responseQueue.add(response);
     }
 
-    String removeResponse(){
-        return responseQueue.poll().toString();
+    Response removeResponse(){
+        return responseQueue.poll();
     }
 }

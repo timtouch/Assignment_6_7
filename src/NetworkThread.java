@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * Connects with the server, requests from the server, and receives from the server
+ * Connects with the server, requests from the server, and receives from the server the result of the requests
  *
  * Created by ttouc on 5/3/2017.
  */
@@ -27,17 +27,13 @@ public class NetworkThread {
         bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         printWriter = new PrintWriter(socket.getOutputStream(), true);
         printWriter.println(name);
-        bufferedReader = new java.io.BufferedReader(new InputStreamReader((System.in)));
+        bufferedReader = new BufferedReader(new InputStreamReader((System.in)));
     }
 
     int requestNumber(Request request) throws IOException{
         int result;
-
-        socket = new Socket(IPAddress, portNumber);
         printWriter.println(request.toString());
         result = Integer.parseInt(bufferedReaderFromClient.readLine());
-
-        socket.close();
         return result;
     }
 }
