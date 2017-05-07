@@ -7,7 +7,6 @@ public class UserThread extends Thread{
     private RuntimeThread runtimeThr;                   // Runtime thread class
 
     private int responses = 0;                          // Counts the responses that the user received
-    private final Request[] values = Request.values();  // Array of possible requests user can make
 
     UserThread(int numOfRequests, RuntimeThread runtimeThr) {
         this.numOfRequests = numOfRequests;
@@ -17,7 +16,7 @@ public class UserThread extends Thread{
     public void run(){
         runtimeThr.start();
         for (int i = 0; i < numOfRequests; i++) {
-            runtimeThr.addRequest(getRandomRequest());
+            runtimeThr.addRequest(Request.getRandomRequest());
         }
 
         while(responses < numOfRequests){
@@ -33,8 +32,6 @@ public class UserThread extends Thread{
     /**
      * @return a random request
      */
-    public Request getRandomRequest(){
-        return values[(int)(Math.random()*values.length)];
-    }
+
 
 }
