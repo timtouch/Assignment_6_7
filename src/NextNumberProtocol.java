@@ -1,13 +1,21 @@
+import javax.lang.model.type.ArrayType;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Created by ttouc on 4/10/2017.
  */
 
 public class NextNumberProtocol {
 
+    // Initialized values for calculations
     private int nextPrimeNumber = 1;
-    private int prevFib = 1;
-    private int nextEvenFibNumber = 1;
+    private int prevFib = 0;
+    private int nextEvenFibNumber = 0;
     private int nextLargerRandomNumber = 0;
+
+    ReentrantLock fibLock = new ReentrantLock();
+    ReentrantLock randLock = new ReentrantLock();
+    ReentrantLock primeLock = new ReentrantLock();
 
     public String processInput(String input)
     {
@@ -15,34 +23,54 @@ public class NextNumberProtocol {
         System.out.println(input);
         if(input.equalsIgnoreCase("nextEvenFib"))
         {
+            fibLock.lock();
             output = String.format("%d", nextEvenFib());
+            fibLock.unlock();
         }
         else if(input.equalsIgnoreCase("nextLargerRand"))
         {
+            randLock.lock();
             output = String.format("%d", nextLargerRand());
+            randLock.unlock();
         }
         else if(input.equalsIgnoreCase("nextPrime"))
         {
+            primeLock.lock();
             output = String.format("%d",  nextPrime());
+            primeLock.unlock();
         }
         else
         {
-            output ="Not a valid input.  The valid inputs are \"nextevenfib\", \"nextLargerRand\", & \"nextPrime\" ";
+            output = "Not a valid input.  The valid inputs are \"nextEvenFib\", \"nextLargerRand\", & \"nextPrime\" ";
         }
         return output;
     }
 
     /**
      * Gets the next even fibonacci number
+     * Starts over from 0 once it reach past the max signed integer number
      * @return  the next even fibonacci number
      */
     public int nextEvenFib()
     {
         int temp;
+
+        // A base for fib numbers
+        if (nextEvenFibNumber == 0){
+            nextEvenFibNumber = 1;
+            return 0;
+        }
         do {
             temp = nextEvenFibNumber;
-            nextEvenFibNumber = nextEvenFibNumber + prevFib;
-            prevFib = temp;
+            try {
+                nextEvenFibNumber = Math.addExact(nextEvenFibNumber, prevFib);
+                prevFib = temp;
+            } catch (ArithmeticException e){
+                nextEvenFibNumber = 1;
+                prevFib = 0;
+                return 0;
+            }
+
         } while (!(nextEvenFibNumber % 2 == 0));
 
         return nextEvenFibNumber;
@@ -50,26 +78,35 @@ public class NextNumberProtocol {
 
     /**
      * Gets the next larger random integer, if it hits the max, it wraps back around
+     * Starts over from 0 once it reach past the max signed integer number
      * @return          a somewhat random number larger than the previous one
      */
     public int nextLargerRand()
     {
-        return nextLargerRandomNumber = (nextLargerRandomNumber + (int)Math.abs(Math.random()*1000)) % Integer.MAX_VALUE;
+        try {
+            nextLargerRandomNumber = Math.addExact(nextLargerRandomNumber, (int)Math.abs(Math.random()*1000));
+        } catch (ArithmeticException e) {
+            nextLargerRandomNumber = Math.addExact(0, (int)Math.abs(Math.random()*Integer.MAX_VALUE));
+        }
+        return nextLargerRandomNumber;
     }
 
 
     /**
      * Gets the next prime number
+     * Starts over from 2 (the smallest prime number) once it reach past the max signed integer number
      * @return          the next prime number
      */
     public int nextPrime()
     {
-        nextPrimeNumber = nextPrimeNumber + 1;
-        while(!isPrime(nextPrimeNumber))
-        {
-            nextPrimeNumber++;
+        try {
+            nextPrimeNumber = Math.incrementExact(nextPrimeNumber);
+            while (!isPrime(nextPrimeNumber)) {
+                nextPrimeNumber = Math.incrementExact(nextPrimeNumber);
+            }
+        } catch (ArithmeticException e) {
+            nextPrimeNumber = 2;
         }
-
         return nextPrimeNumber;
     }
 

@@ -7,17 +7,27 @@
  */
 public class LocalOddEvenThread {
     private int odd = -1;
-    private int even = 0;
+    private int even = -2;
 
     public int nextOdd()
     {
-        odd = odd + 2;
+        try {
+            odd = Math.addExact(odd, 2);
+        } catch (ArithmeticException e){
+            odd = 1;
+        }
+
         return odd;
     }
 
     public int nextEven()
     {
-        even = even + 2;
+        try {
+            even = Math.addExact(even, 2);
+        } catch (ArithmeticException e) {
+            even = 0;
+        }
+
         return even;
     }
 }
