@@ -24,20 +24,32 @@ public class NextNumberProtocol {
         if(input.equalsIgnoreCase("nextEvenFib"))
         {
             fibLock.lock();
-            output = String.format("%d", nextEvenFib());
-            fibLock.unlock();
+            try{
+                output = String.format("%d", nextEvenFib());
+            } finally {
+                fibLock.unlock();
+            }
+
         }
         else if(input.equalsIgnoreCase("nextLargerRand"))
         {
             randLock.lock();
-            output = String.format("%d", nextLargerRand());
-            randLock.unlock();
+            try {
+                output = String.format("%d", nextLargerRand());
+            } finally {
+                randLock.unlock();
+            }
+
+
         }
         else if(input.equalsIgnoreCase("nextPrime"))
         {
             primeLock.lock();
-            output = String.format("%d",  nextPrime());
-            primeLock.unlock();
+            try {
+                output = String.format("%d",  nextPrime());
+            } finally {
+                primeLock.unlock();
+            }
         }
         else
         {
