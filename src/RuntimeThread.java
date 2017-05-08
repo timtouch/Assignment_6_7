@@ -28,7 +28,7 @@ public class RuntimeThread extends Thread {
     /**
      * Handles the next request on the request queue
      */
-    void handleRequest() throws IOException{
+    private void handleRequest() throws IOException{
         Request request = removeRequest();
         switch (request){
             case NEXTODD:

@@ -1,7 +1,7 @@
-import javax.lang.model.type.ArrayType;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * Class to get the next even fibonacci, next larger random number, or next prime number
  * Created by ttouc on 4/10/2017.
  */
 
@@ -13,9 +13,9 @@ public class NextNumberProtocol {
     private int nextEvenFibNumber = 0;
     private int nextLargerRandomNumber = 0;
 
-    ReentrantLock fibLock = new ReentrantLock();
-    ReentrantLock randLock = new ReentrantLock();
-    ReentrantLock primeLock = new ReentrantLock();
+    private ReentrantLock fibLock = new ReentrantLock();
+    private ReentrantLock randLock = new ReentrantLock();
+    private ReentrantLock primeLock = new ReentrantLock();
 
     public String processInput(String input)
     {
