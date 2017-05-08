@@ -16,7 +16,7 @@ public class UserThread extends Thread{
     public void run(){
         runtimeThr.start();
         for (int i = 0; i < numOfRequests; i++) {
-            runtimeThr.addRequest(Request.getRandomRequest());
+            runtimeThr.addRequest(Request.NEXTEVENFIB);
         }
 
         while(responses < numOfRequests){

@@ -9,7 +9,7 @@ import java.net.Socket;
  *
  * Created by ttouc on 5/3/2017.
  */
-public class NetworkThread {
+public class NetworkThread extends Thread{
 
     private String name;
     private String IPAddress;
@@ -19,21 +19,41 @@ public class NetworkThread {
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
 
-    NetworkThread () throws IOException{
-        name = "Client 1";
-        IPAddress = "localhost";
-        portNumber = 4444;
-        socket = new Socket(IPAddress, portNumber);
-        bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        printWriter = new PrintWriter(socket.getOutputStream(), true);
-        printWriter.println(name);
-        bufferedReader = new BufferedReader(new InputStreamReader((System.in)));
+    private RuntimeThread runtimeThread;
+    private Request request;
+
+    NetworkThread (RuntimeThread runtimeThread, Request request) {
+        this.runtimeThread = runtimeThread;
+        this.request = request;
     }
 
-    int requestNumber(Request request) throws IOException{
+    public void run() {
+        try {
+            name = "Client 1";
+            IPAddress = "localhost";
+            portNumber = 4444;
+            socket = new Socket(IPAddress, portNumber);
+            bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
+            printWriter.println(name);
+            bufferedReader = new BufferedReader(new InputStreamReader((System.in)));
+
+            requestNumber(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void requestNumber(Request request) throws IOException {
         int result;
         printWriter.println(request.toString());
         result = Integer.parseInt(bufferedReaderFromClient.readLine());
-        return result;
+        runtimeThread.addResponse(new Response(request, result));
     }
 }

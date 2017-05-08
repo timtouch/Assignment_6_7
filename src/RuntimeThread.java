@@ -11,13 +11,6 @@ public class RuntimeThread extends Thread {
     private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
     private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
 
-    private LocalOddEvenThread localThr = new LocalOddEvenThread();
-    private NetworkThread networkThr;
-
-
-    RuntimeThread() throws IOException {
-        networkThr = new NetworkThread();
-    }
 
     public void run()  {
         try {
@@ -38,15 +31,13 @@ public class RuntimeThread extends Thread {
         Request request = removeRequest();
         switch (request){
             case NEXTODD:
-                addResponse(new Response(request, localThr.nextOdd()));
-                break;
             case NEXTEVEN:
-                addResponse(new Response(request, localThr.nextEven()));
+                new LocalOddEvenThread(this, request).start();
                 break;
             case NEXTPRIME:
             case NEXTEVENFIB:
             case NEXTLARGERRAND:
-                addResponse(new Response(request, networkThr.requestNumber(request)));
+                new NetworkThread(this, request);
                 break;
             default:
                 break;
@@ -57,19 +48,19 @@ public class RuntimeThread extends Thread {
         return !responseQueue.isEmpty();
     }
 
-    void addRequest(Request request){
+    public void addRequest(Request request){
         requestQueue.add(request);
     }
 
-    Request removeRequest(){
+    public Request removeRequest(){
         return requestQueue.poll();
     }
 
-    void addResponse(Response response){
+    public void addResponse(Response response){
         responseQueue.add(response);
     }
 
-    Response removeResponse(){
+    public Response removeResponse(){
         return responseQueue.poll();
     }
 }
