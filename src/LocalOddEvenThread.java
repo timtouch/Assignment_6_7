@@ -11,10 +11,10 @@ public class LocalOddEvenThread extends Thread{
     private static int odd = -1;
     private static int even = -2;
 
-    RuntimeThread runtimeThread;
-    Request request;
-    ReentrantLock evenLock = new ReentrantLock();
-    ReentrantLock oddLock = new ReentrantLock();
+    private RuntimeThread runtimeThread;
+    private Request request;
+    private ReentrantLock evenLock = new ReentrantLock();
+    private ReentrantLock oddLock = new ReentrantLock();
 
     LocalOddEvenThread(RuntimeThread runtimeThread, Request request){
         this.runtimeThread = runtimeThread;

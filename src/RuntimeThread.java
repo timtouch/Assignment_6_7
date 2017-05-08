@@ -11,10 +11,11 @@ public class RuntimeThread extends Thread {
     private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
     private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
 
+    private boolean hasMoreRequests = true;
 
     public void run()  {
         try {
-            while (true) {
+            while (hasMoreRequests) {
                 if (!requestQueue.isEmpty()) {
                     handleRequest();
                 }
@@ -24,7 +25,7 @@ public class RuntimeThread extends Thread {
         }
     }
 
-    /***
+    /**
      * Handles the next request on the request queue
      */
     void handleRequest() throws IOException{
@@ -37,11 +38,18 @@ public class RuntimeThread extends Thread {
             case NEXTPRIME:
             case NEXTEVENFIB:
             case NEXTLARGERRAND:
-                new NetworkThread(this, request);
+                new NetworkThread(this, request).start();
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     *
+     */
+    public void finishedAllRequests() {
+        hasMoreRequests = false;
     }
 
     public boolean hasResponse(){

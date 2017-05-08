@@ -17,7 +17,6 @@ public class NetworkThread extends Thread{
     private int portNumber;
     private BufferedReader bufferedReaderFromClient;
     private PrintWriter printWriter;
-    private BufferedReader bufferedReader;
 
     private RuntimeThread runtimeThread;
     private Request request;
@@ -36,7 +35,6 @@ public class NetworkThread extends Thread{
             bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             printWriter.println(name);
-            bufferedReader = new BufferedReader(new InputStreamReader((System.in)));
 
             requestNumber(request);
         } catch (Exception e) {

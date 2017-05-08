@@ -16,7 +16,7 @@ public class UserThread extends Thread{
     public void run(){
         runtimeThr.start();
         for (int i = 0; i < numOfRequests; i++) {
-            runtimeThr.addRequest(Request.NEXTEVENFIB);
+            runtimeThr.addRequest(Request.getRandomRequest());
         }
 
         while(responses < numOfRequests){
@@ -26,7 +26,7 @@ public class UserThread extends Thread{
                 responses++;
             }
         }
-        return;
+        runtimeThr.finishedAllRequests(); // Signal runtime thread that we are finished
     }
 
     /**
