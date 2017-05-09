@@ -1,5 +1,5 @@
 import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Manages the requests from the request queue and responses in the response queue
@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RuntimeThread extends Thread {
 
-    private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
-    private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
+    private LinkedBlockingQueue<Request> requestQueue = new LinkedBlockingQueue();
+    private LinkedBlockingQueue<Response> responseQueue = new LinkedBlockingQueue();
 
     private boolean hasMoreRequests = true;
 
@@ -17,7 +17,7 @@ public class RuntimeThread extends Thread {
         try {
             while (hasMoreRequests) {
                 if (!requestQueue.isEmpty()) {
-                    handleRequest();
+                    handleRequest(removeRequest());
                 }
             }
         } catch (Exception e){
@@ -28,8 +28,7 @@ public class RuntimeThread extends Thread {
     /**
      * Handles the next request on the request queue
      */
-    private void handleRequest() throws IOException{
-        Request request = removeRequest();
+    private void handleRequest(Request request) throws IOException{
         switch (request){
             case NEXTODD:
             case NEXTEVEN:
@@ -60,15 +59,15 @@ public class RuntimeThread extends Thread {
         requestQueue.add(request);
     }
 
-    public Request removeRequest(){
-        return requestQueue.poll();
+    public Request removeRequest() throws InterruptedException{
+        return requestQueue.take();
     }
 
     public void addResponse(Response response){
         responseQueue.add(response);
     }
 
-    public Response removeResponse(){
-        return responseQueue.poll();
+    public Response removeResponse() throws InterruptedException{
+        return responseQueue.take();
     }
 }

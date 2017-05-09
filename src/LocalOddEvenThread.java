@@ -13,6 +13,8 @@ public class LocalOddEvenThread extends Thread{
 
     private RuntimeThread runtimeThread;
     private Request request;
+    // TODO: This does not do anything for synchronization as each creation of this thread has their own instance of these locks
+    // Redo this so that these two locks are shared between all instances of threads for a user or users
     private ReentrantLock evenLock = new ReentrantLock();
     private ReentrantLock oddLock = new ReentrantLock();
 
