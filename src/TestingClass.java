@@ -4,11 +4,11 @@
 
 public class TestingClass {
 
-    static int numOfUsers = 2;
+    static int numOfUsers = 1;
     public static void main(String[] args){
         try {
             for (int i = 0; i < numOfUsers; i++) {
-                new UserThread(20, new RuntimeThread()).start();
+                new UserThread(20).start();
             }
         } catch (Exception e){
             e.printStackTrace();

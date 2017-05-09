@@ -1,9 +1,10 @@
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manages the requests from the request queue and responses in the response queue
- * Created by ttouc on 5/3/2017.
  */
 
 public class RuntimeThread extends Thread {
@@ -11,14 +12,25 @@ public class RuntimeThread extends Thread {
     private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
     private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
 
+    private ReentrantLock reqLock = new ReentrantLock();
+    private ReentrantLock resLock = new ReentrantLock();
+
+    private Condition notEmptyRequestQueue = reqLock.newCondition();
+    private Condition notEmptyResponseQueue = resLock.newCondition();
+
     private boolean hasMoreRequests = true;
+
+    private int totalUserRequests;
+    private int requestCounter = 0;
+
+    RuntimeThread (int totalUserRequests){
+        this.totalUserRequests = totalUserRequests;
+    }
 
     public void run()  {
         try {
-            while (hasMoreRequests) {
-                if (!requestQueue.isEmpty()) {
-                    handleRequest();
-                }
+            while (requestCounter < totalUserRequests) {
+                handleRequest(removeRequest());
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -28,8 +40,7 @@ public class RuntimeThread extends Thread {
     /**
      * Handles the next request on the request queue
      */
-    private void handleRequest() throws IOException{
-        Request request = removeRequest();
+    private void handleRequest(Request request) throws IOException{
         switch (request){
             case NEXTODD:
             case NEXTEVEN:
@@ -57,18 +68,58 @@ public class RuntimeThread extends Thread {
     }
 
     public void addRequest(Request request){
-        requestQueue.add(request);
+        reqLock.lock();
+        try {
+            requestQueue.add(request);
+            notEmptyRequestQueue.signalAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            reqLock.unlock();
+        }
     }
 
     public Request removeRequest(){
-        return requestQueue.poll();
+        reqLock.lock();
+        try {
+            while ( requestQueue.isEmpty()){
+                notEmptyRequestQueue.await();
+            }
+            requestCounter++;
+            return requestQueue.poll();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            reqLock.unlock();
+        }
+        return null;
     }
 
     public void addResponse(Response response){
-        responseQueue.add(response);
+        resLock.lock();
+        try {
+            responseQueue.add(response);
+            notEmptyResponseQueue.signalAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            resLock.unlock();
+        }
+
     }
 
     public Response removeResponse(){
-        return responseQueue.poll();
+        resLock.lock();
+        try {
+            while (responseQueue.isEmpty()) {
+                notEmptyResponseQueue.await();
+            }
+            return responseQueue.poll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            resLock.unlock();
+        }
+        return null;
     }
 }

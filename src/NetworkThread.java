@@ -6,8 +6,6 @@ import java.net.Socket;
 
 /**
  * Connects with the server, requests from the server, and receives from the server the result of the requests
- *
- * Created by ttouc on 5/3/2017.
  */
 public class NetworkThread extends Thread{
 
