@@ -22,16 +22,10 @@ public class UserThread extends Thread{
         while(responses < numOfRequests){
             if(runtimeThr.hasResponse()){
                 Response res = runtimeThr.removeResponse();
-                System.out.printf("User ID: %-3d sent request %-15s amd received the value: %10d%n", getId(), res.getResponseFrom(), res.getValue());
+                System.out.printf("User ID: %-3d sent request %-15s and received the value: %10d%n", getId(), res.getResponseFrom(), res.getValue());
                 responses++;
             }
         }
         runtimeThr.finishedAllRequests(); // Signal runtime thread that we are finished
     }
-
-    /**
-     * @return a random request
-     */
-
-
 }
