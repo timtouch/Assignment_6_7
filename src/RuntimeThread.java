@@ -11,6 +11,7 @@ public class RuntimeThread extends Thread {
     private ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue();
     private ConcurrentLinkedQueue<Response> responseQueue = new ConcurrentLinkedQueue();
 
+    private NextOddEven nxtOddEven = new NextOddEven();
     private boolean hasMoreRequests = true;
 
     public void run()  {
@@ -33,7 +34,7 @@ public class RuntimeThread extends Thread {
         switch (request){
             case NEXTODD:
             case NEXTEVEN:
-                new LocalOddEvenThread(this, request).start();
+                new LocalThread(this, request, nxtOddEven).start();
                 break;
             case NEXTPRIME:
             case NEXTEVENFIB:
@@ -46,7 +47,7 @@ public class RuntimeThread extends Thread {
     }
 
     /**
-     *
+     * Poison method to break this runtime thread out of the while loop
      */
     public void finishedAllRequests() {
         hasMoreRequests = false;
