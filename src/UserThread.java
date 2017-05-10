@@ -1,36 +1,41 @@
 /**
  * Requests for different random services and prints out the responses
- * Created by ttouc on 5/3/2017.
  */
 public class UserThread extends Thread{
+    private int userID;                                 // ID to differentiate from other UserThreads
     private int numOfRequests;                          // Number of request user thread will make
-    private RuntimeThread runtimeThr;                   // Runtime thread class
+    private RuntimeThread runtimeThr;
 
     private int responses = 0;                          // Counts the responses that the user received
 
-    UserThread(int numOfRequests, RuntimeThread runtimeThr) {
+    UserThread(int userID, int numOfRequests, RuntimeThread runtimeThr) {
+        this.userID = userID;
         this.numOfRequests = numOfRequests;
         this.runtimeThr = runtimeThr;
     }
 
     public void run(){
         runtimeThr.start();
+
+        // Puts in a designated number of random requests
         for (int i = 0; i < numOfRequests; i++) {
-            runtimeThr.addRequest(Request.getRandomRequest());
-        }
-
-        while(responses < numOfRequests){
-            if(runtimeThr.hasResponse()){
-                try {
-                    Response res = runtimeThr.removeResponse();
-                    System.out.printf("User ID: %-3d sent request %-15s and received the value: %10d%n", getId(), res.getResponseFrom(), res.getValue());
-                    responses++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+            try {
+                runtimeThr.addRequest(Request.getRandomRequest());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        runtimeThr.finishedAllRequests(); // Signal runtime thread that we are finished
+
+        // While there are still requests that haven't been responded to
+        while(responses < numOfRequests){
+            try {
+                Response res = runtimeThr.removeResponse();
+                System.out.printf("User ID: %-3d sent request %-15s and received the value: %10d%n", userID, res.getResponseFrom(), res.getValue());
+                responses++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        runtimeThr.finishedAllRequests(); // Signal RuntimeThread that this UserThread is finished
     }
 }

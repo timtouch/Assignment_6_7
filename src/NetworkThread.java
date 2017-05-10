@@ -4,13 +4,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-/**
- * Connects with the server, requests from the server, and receives from the server the result of the requests
- *
- * Created by ttouc on 5/3/2017.
- */
 public class NetworkThread extends Thread{
 
+    private int userID;
     private String name;
     private String IPAddress;
     private Socket socket;
@@ -21,22 +17,26 @@ public class NetworkThread extends Thread{
     private RuntimeThread runtimeThread;
     private Request request;
 
-    NetworkThread (RuntimeThread runtimeThread, Request request) {
+    NetworkThread (RuntimeThread runtimeThread, int userID, String IPAddress, Request request) {
         this.runtimeThread = runtimeThread;
+        this.userID = userID;
+        this.IPAddress = IPAddress;
         this.request = request;
     }
 
+    /**
+     * Connects to server and requests for a specific value. Once it gets the value, put the result in the response queue
+     */
     public void run() {
         try {
-            name = "Client 1";
-            IPAddress = "localhost";
+            name = String.format("User %d", userID);
             portNumber = 4444;
             socket = new Socket(IPAddress, portNumber);
             bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             printWriter.println(name);
 
-            requestNumber(request);
+            runtimeThread.addResponse(new Response(request, requestNumber(request)));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -48,10 +48,13 @@ public class NetworkThread extends Thread{
         }
     }
 
-    private void requestNumber(Request request) throws IOException {
-        int result;
+    /**
+     * @param request to the server
+     * @return result of the request
+     * @throws IOException
+     */
+    private int requestNumber(Request request) throws IOException {
         printWriter.println(request.toString());
-        result = Integer.parseInt(bufferedReaderFromClient.readLine());
-        runtimeThread.addResponse(new Response(request, result));
+        return Integer.parseInt(bufferedReaderFromClient.readLine());
     }
 }

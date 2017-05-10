@@ -1,27 +1,24 @@
 import java.io.IOException;
-import java.io.*;
-import java.net.*;
 
-
+/**
+ * Top level class that starts are the
+ */
 public class Client {
 
-	public static void main(String[] args) throws UnknownHostException, IOException{
+
+	public static void main(String[] args) throws IOException{
 		if(args.length == 2){
-			String name = args[0];
+			int numOfUsers = Integer.parseInt(args[0]);
 			String IPAddress = args[1];
-			Socket socket = new Socket(IPAddress, 4444);
-			BufferedReader bufferedReaderFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
-			printWriter.println(name);
-			BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
-			while(true){
-				System.out.println("Please type any character to send a request: ");
-				String readerInput = bufferedReader.readLine();
-				printWriter.println(readerInput); // This is where we send to the server
-				System.out.println(bufferedReaderFromClient.readLine());
+			try {
+				for (int i = 0; i < numOfUsers; i++) {
+					new UserThread(i,20, new RuntimeThread(i, IPAddress)).start();
+				}
+			} catch (Exception e){
+				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Usage: Client <name> <Server IP Address>");
+			System.out.println("Usage: Client <Number of UserThreads> <Server IP Address>");
 		}
 	}
 }

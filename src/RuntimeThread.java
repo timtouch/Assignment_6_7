@@ -3,16 +3,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Manages the requests from the request queue and responses in the response queue
- * Created by ttouc on 5/3/2017.
  */
 
 public class RuntimeThread extends Thread {
 
+    private int userID;
+    private String serverIPAddress;
     private LinkedBlockingQueue<Request> requestQueue = new LinkedBlockingQueue();
     private LinkedBlockingQueue<Response> responseQueue = new LinkedBlockingQueue();
-
+    private NextOddEven nextOddEven = new NextOddEven();
     private boolean hasMoreRequests = true;
 
+    RuntimeThread (int userID, String serverIPAddress) {
+        this.userID = userID;
+        this.serverIPAddress = serverIPAddress;
+    }
     public void run()  {
         try {
             while (hasMoreRequests) {
@@ -32,12 +37,12 @@ public class RuntimeThread extends Thread {
         switch (request){
             case NEXTODD:
             case NEXTEVEN:
-                new LocalOddEvenThread(this, request).start();
+                new LocalThread(this, request, nextOddEven).start();
                 break;
             case NEXTPRIME:
             case NEXTEVENFIB:
             case NEXTLARGERRAND:
-                new NetworkThread(this, request).start();
+                new NetworkThread(this, userID, serverIPAddress, request).start();
                 break;
             default:
                 break;
@@ -45,26 +50,22 @@ public class RuntimeThread extends Thread {
     }
 
     /**
-     *
+     *  Poison pill for the while loop in RuntimeThreads run() function
      */
     public void finishedAllRequests() {
         hasMoreRequests = false;
     }
 
-    public boolean hasResponse(){
-        return !responseQueue.isEmpty();
-    }
-
-    public void addRequest(Request request){
-        requestQueue.add(request);
+    public void addRequest(Request request) throws InterruptedException{
+        requestQueue.put(request);
     }
 
     public Request removeRequest() throws InterruptedException{
         return requestQueue.take();
     }
 
-    public void addResponse(Response response){
-        responseQueue.add(response);
+    public void addResponse(Response response) throws InterruptedException{
+        responseQueue.put(response);
     }
 
     public Response removeResponse() throws InterruptedException{

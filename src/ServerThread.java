@@ -17,7 +17,7 @@ public class ServerThread extends Thread{
             String message = null;
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader bufferedReader  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("User " + bufferedReader.readLine() + " is now connected to the server.");
+            System.out.println(bufferedReader.readLine() + " is now connected to the server.");
             while((message = bufferedReader.readLine()) != null){
                 printWriter.println(nnprotocol.processInput(message)); //response to client
             }
