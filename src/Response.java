@@ -1,7 +1,5 @@
 /**
- * Place to store responses
- *
- * Created by ttouc on 5/4/2017.
+ * Object to store response info
  */
 public class Response {
     private Request responseFrom;

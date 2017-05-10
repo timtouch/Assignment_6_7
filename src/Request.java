@@ -1,7 +1,5 @@
 /**
- * Enum class for request data type
- *
- * Created by ttouc on 5/4/2017.
+ * Enum class to represent requests
  */
 public enum Request {
     NEXTEVEN,

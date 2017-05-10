@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 /**
- * Top level class that starts are the
+ * Top level class that starts the user threads
  */
 public class Client {
 

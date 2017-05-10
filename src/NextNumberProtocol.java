@@ -2,7 +2,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class to get the next even fibonacci, next larger random number, or next prime number
- * Created by ttouc on 4/10/2017.
  */
 
 public class NextNumberProtocol {
